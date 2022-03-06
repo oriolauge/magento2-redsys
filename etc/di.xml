@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Payment Method Facade configuration -->
+    <virtualType name="RedsysFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">OAG\Redsys\Model\Ui\RedsysConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">OAG\Redsys\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">RedsysValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">RedsysCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <type name="OAG\Redsys\Gateway\Config\Redsys">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OAG\Redsys\Model\Ui\RedsysConfigProvider::CODE</argument>
+        </arguments>
+    </type>
+
+    <!-- Commands infrastructure -->
+    <virtualType name="RedsysCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="initialize" xsi:type="string">Magento\Payment\Gateway\Command\NullCommand</item>
+                <item name="authorize" xsi:type="string">Magento\Payment\Gateway\Command\NullCommand</item>
+                <item name="capture" xsi:type="string">Magento\Payment\Gateway\Command\NullCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- END Commands infrastructure -->
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="RedsysValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">RedsysConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="RedsysConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">OAG\Redsys\Gateway\Config\Redsys</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="OAG\Redsys\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">OAG\Redsys\Gateway\Config\Redsys</argument>
+        </arguments>
+    </type>
+
+</config>
