@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <!-- Guest place order with payment information saving -->
+    <route url="/V1/guest-carts/:cartId/redsys-information" method="GET">
+        <service class="OAG\Redsys\Api\GuestRedsysPaymentInformationManagementInterface" method="getPaymentInformation"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <!-- Get payment information -->
+    <route url="/V1/carts/mine/redsys-information" method="GET">
+        <service class="OAG\Redsys\Api\RedsysPaymentInformationManagementInterface" method="getPaymentInformation"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+</routes>

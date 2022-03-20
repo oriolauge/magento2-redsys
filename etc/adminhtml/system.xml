@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="oag_redsys" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Redsys credit card</label>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Card Payments</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                    <comment><![CDATA[Payment method title that will be displayed in checkout]]></comment>
+                </field>
+                <field id="environment" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Environment</label>
+                    <source_model>OAG\Redsys\Model\Adminhtml\Source\Environment</source_model>
+                    <comment><![CDATA[Production Enviroment: https://sis.redsys.es/sis/realizarPago/utf-8 <br> Sandbox Enviroment: https://sis-t.redsys.es:25443/sis/realizarPago/utf-8]]></comment>
+                </field>
+                <field id="merchantcode" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Commerce Number (FUC)</label>
+                    <comment><![CDATA[Identity number that Redsys send to the merchant]]></comment>
+                </field>
+                <field id="secret_key" translate="label" type="obscure" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Secret Encrypted Key (SHA-256)</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[Secret key that Redsys send to the merchant]]></comment>
+                </field>
+                <field id="transaction_type" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Transaction Type</label>
+                    <source_model>OAG\Redsys\Model\Adminhtml\Source\TransactionType</source_model>
+                    <comment><![CDATA[Define Transaction Type in Redsys plaform.]]></comment>
+                </field>
+                <field id="terminal" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Terminal Number</label>
+                    <comment><![CDATA[Terminal number that Redsys send to the merchant.]]></comment>
+                </field>
+                <group id="oag_redsys_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="80">
+                    <label>Country Specific Settings</label>
+                    <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Payment from Applicable Countries</label>
+                        <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                        <config_path>payment/oag_redsys/allowspecific</config_path>
+                    </field>
+                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Payment from Specific Countries</label>
+                        <source_model>PayPal\Braintree\Model\Adminhtml\System\Config\Country</source_model>
+                        <can_be_empty>1</can_be_empty>
+                        <config_path>payment/oag_redsys/specificcountry</config_path>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>
