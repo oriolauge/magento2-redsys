@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- API interfaces to link to her module -->
+    <preference for="OAG\Redsys\Api\GuestRedsysPaymentInformationManagementInterface" type="OAG\Redsys\Model\GuestPaymentInformationManagement" />
+    <preference for="OAG\Redsys\Api\RedsysPaymentInformationManagementInterface" type="OAG\Redsys\Model\PaymentInformationManagement" />
+
     <!-- Payment Method Facade configuration -->
     <virtualType name="RedsysFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>

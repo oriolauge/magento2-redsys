@@ -4,14 +4,18 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Checkout/js/action/set-payment-information',
-        'mage/url'
+        'OAG_Redsys/js/action/get-redsys-payment-information',
+        'Magento_Checkout/js/model/full-screen-loader',
+        'OAG_Redsys/js/form-builder'
     ],
     function (
         $,
         Component,
         additionalValidators,
         setPaymentInformationAction,
-        url
+        getRedsysPaymentInformationAction,
+        fullScreenLoader,
+        formBuilder
         ) {
         'use strict';
 
@@ -43,9 +47,19 @@ define(
                             this.getData()
                         )
                     ).done( function () {
-                        window.location.replace(
-                            url.build(window.checkoutConfig.payment.oag_redsys.redirectUrl)
-                        );
+                        var deferred = $.Deferred();
+                        fullScreenLoader.startLoader();
+                        getRedsysPaymentInformationAction(deferred);
+                        $.when(deferred).always(function () {
+                            fullScreenLoader.stopLoader();
+                        }).done(function(response) {
+                            formBuilder.build(
+                                {
+                                    action: window.checkoutConfig.payment.oag_redsys.postUrl,
+                                    fields: JSON.parse(response)
+                                }
+                            ).submit();
+                        });
                     }).always( function () {
                         self.isPlaceOrderActionAllowed(true);
                     });
