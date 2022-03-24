@@ -12,3 +12,4 @@
 "Secret key that Redsys send to the merchant","Secret key that Redsys send to the merchant"
 "Title","Title"
 "Payment method title that will be displayed in checkout","Payment method title that will be displayed in checkout"
+"Transaction denied.","Transaction denied."
