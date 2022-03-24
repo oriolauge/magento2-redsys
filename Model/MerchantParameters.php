@@ -7,6 +7,7 @@ use OAG\Redsys\Model\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Quote\Model\Quote;
+use Magento\Framework\UrlInterface;
 
 class MerchantParameters
 {
@@ -33,6 +34,11 @@ class MerchantParameters
     protected $productDescription;
 
     /**
+     * @var UrlInterface
+     */
+    protected $url;
+
+    /**
      * Construct function
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -44,12 +50,14 @@ class MerchantParameters
         ScopeConfigInterface $scopeConfig,
         Currency $currency,
         Language $language,
-        ProductDescription $productDescription
+        ProductDescription $productDescription,
+        UrlInterface $url
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->currency = $currency;
         $this->language = $language;
         $this->productDescription = $productDescription;
+        $this->url = $url;
     }
 
     /**
@@ -79,9 +87,9 @@ class MerchantParameters
             'DS_MERCHANT_CURRENCY' => $this->currency->getCurrency($quote->getQuoteCurrencyCode()),
             'DS_MERCHANT_TRANSACTIONTYPE' => $transaction,
             'DS_MERCHANT_TERMINAL' => $terminal,
-            'DS_MERCHANT_MERCHANTURL' => 'callback_url',
-            'DS_MERCHANT_URLOK' => 'callback_ok',
-            'DS_MERCHANT_URLKO' => 'callback_ko',
+            'DS_MERCHANT_MERCHANTURL' => $this->url->getUrl(ConfigInterface::CALLBACK_PROCESS_PAYMENT_URL),
+            'DS_MERCHANT_URLOK' => $this->url->getUrl(ConfigInterface::CALLBACK_SUCCESS_URL),
+            'DS_MERCHANT_URLKO' => $this->url->getUrl(ConfigInterface::CALLBACK_ERROR_URL),
             'DS_MERCHANT_CONSUMERLANGUAGE' => $this->language->getLanguageByCode($codeLanguage),
             'DS_MERCHANT_PRODUCTDESCRIPTION' => $this->productDescription->execute($quote),
             'DS_MERCHANT_PAYMETHODS' => 'C'
