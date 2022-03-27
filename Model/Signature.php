@@ -3,6 +3,7 @@ namespace OAG\Redsys\Model;
 use OAG\Redsys\Model\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
+use OAG\Redsys\Model\Base64Url;
 
 class Signature
 {
@@ -11,10 +12,17 @@ class Signature
      */
     protected $scopeConfig;
 
+    /**
+     * @var OAG\Redsys\Model\Base64Url
+     */
+    protected $base64Url;
+
     public function __construct(
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        Base64Url $base64Url
     ) {
         $this->scopeConfig = $scopeConfig;
+        $this->base64Url = $base64Url;
     }
 
     /**
@@ -24,13 +32,36 @@ class Signature
      * @param string $merchantParameters
      * @return string
      */
-    public function getSignature(string $incrementId, string $merchantParameters): string
+    public function generateRequestSignature(string $incrementId, string $merchantParameters): string
+    {
+        return base64_encode($this->generateSignature($incrementId, $merchantParameters));
+    }
+
+    /**
+     * Generate signature that recieve from Redsys platform
+     *
+     * @param string $incrementId
+     * @param string $merchantParameters
+     * @return string
+     */
+    public function generateResponseSignature(string $incrementId, string $merchantParameters): string
+    {
+        return $this->base64Url->encode((string) $this->generateSignature($incrementId, $merchantParameters));
+    }
+
+    /**
+     * Generate Redsys signature
+     *
+     * @param string $incrementId
+     * @param string $merchantParameters
+     * @return string|false
+     */
+    protected function generateSignature(string $incrementId, string $merchantParameters)
     {
         $keySha256 = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_SECRET_KEY, ScopeInterface::SCOPE_STORE);
         $key = base64_decode($keySha256);
         $key = $this->encrypt3DES($incrementId, $key);
-        $signature = hash_hmac('sha256', $merchantParameters, $key, true);
-        return base64_encode($signature);
+        return hash_hmac('sha256', $merchantParameters, $key, true);
     }
 
     /**
