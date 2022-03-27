@@ -14,6 +14,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use OAG\Redsys\Model\Signature;
 use OAG\Redsys\Model\QuoteRepository;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Api\CartManagementInterface;
 
 class Processpayment extends Action implements CsrfAwareActionInterface, HttpPostActionInterface
 {
@@ -44,6 +45,11 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
     private $cartRepository;
 
     /**
+     * @var CartManagementInterface
+     */
+    private $quoteManagement;
+
+    /**
      * @param Context $context
      */
     public function __construct(
@@ -52,7 +58,8 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         JsonFactory $resultJsonFactory,
         Signature $signature,
         QuoteRepository $quoteRepository,
-        CartRepositoryInterface $cartRepository
+        CartRepositoryInterface $cartRepository,
+        CartManagementInterface $quoteManagement
     )
     {
         parent::__construct($context);
@@ -61,6 +68,7 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         $this->signature = $signature;
         $this->quoteRepository = $quoteRepository;
         $this->cartRepository = $cartRepository;
+        $this->quoteManagement = $quoteManagement;
     }
 
 
@@ -92,12 +100,14 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
             return $this->returnJsonError('Quote not found');
         }
 
+        $order = $this->placeQuote($quote);
+
         //@todo: create order and invoce.
 
         $resultPage = $this->resultJsonFactory->create();
         $resultPage->setData([
             'success' => true,
-            'message' => __('Order completed')
+            'message' => __('Order completed: ' . $order->getId())
         ]);
         return $resultPage;
     }
@@ -173,5 +183,11 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
             $quote = $this->quoteRepository->loadQuoteByReservedOrderId($merchantParameters['Ds_Order']);
         }
         return $quote;
+    }
+
+    protected function placeQuote($quote)
+    {
+        $quote->collectTotals();
+        return $this->quoteManagement->submit($quote);
     }
 }
