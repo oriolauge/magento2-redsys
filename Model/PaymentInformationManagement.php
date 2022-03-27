@@ -84,7 +84,7 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
             return json_encode([
                 'Ds_SignatureVersion' => Redsys::SIGNATURE_VERSION,
                 'Ds_MerchantParameters' => $merchantParameters,
-                'Ds_Signature' => $this->signature->getSignature($incrementId, $merchantParameters)
+                'Ds_Signature' => $this->signature->generateRequestSignature($incrementId, $merchantParameters)
             ]);
         } catch (\Exception $e) {
             $this->logger->debug($e->getMessage());

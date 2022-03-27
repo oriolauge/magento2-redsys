@@ -76,23 +76,23 @@ class MerchantParameters
         /**
          * @todo: missign optionals params:
          * Ds_Merchant_Titular
-         * Ds_Merchant_MerchantData
          * Ds_Merchant_MerchantName
          * DS_MERCHANT_EMV3DS
          */
         $result = [
-            'DS_MERCHANT_AMOUNT' => $this->convertAmountToRedsysFormat($quote->getGrandTotal()),
-            'DS_MERCHANT_ORDER' => $quote->getReservedOrderId(),
-            'DS_MERCHANT_MERCHANTCODE' => $merchantCode,
-            'DS_MERCHANT_CURRENCY' => $this->currency->getCurrency($quote->getQuoteCurrencyCode()),
-            'DS_MERCHANT_TRANSACTIONTYPE' => $transaction,
-            'DS_MERCHANT_TERMINAL' => $terminal,
-            'DS_MERCHANT_MERCHANTURL' => $this->url->getUrl(ConfigInterface::CALLBACK_PROCESS_PAYMENT_URL),
-            'DS_MERCHANT_URLOK' => $this->url->getUrl(ConfigInterface::CALLBACK_SUCCESS_URL),
-            'DS_MERCHANT_URLKO' => $this->url->getUrl(ConfigInterface::CALLBACK_ERROR_URL),
-            'DS_MERCHANT_CONSUMERLANGUAGE' => $this->language->getLanguageByCode($codeLanguage),
-            'DS_MERCHANT_PRODUCTDESCRIPTION' => $this->productDescription->execute($quote),
-            'DS_MERCHANT_PAYMETHODS' => 'C'
+            'Ds_Merchant_Amount' => $this->convertAmountToRedsysFormat($quote->getGrandTotal()),
+            'Ds_Merchant_Order' => $quote->getReservedOrderId(),
+            'Ds_Merchant_MerchantCode' => $merchantCode,
+            'Ds_Merchant_Currency' => $this->currency->getCurrency($quote->getQuoteCurrencyCode()),
+            'Ds_Merchant_TransactionType' => $transaction,
+            'Ds_Merchant_Terminal' => $terminal,
+            'Ds_Merchant_MerchantURL' => $this->url->getUrl(ConfigInterface::CALLBACK_PROCESS_PAYMENT_URL),
+            'Ds_Merchant_UrlOK' => $this->url->getUrl(ConfigInterface::CALLBACK_SUCCESS_URL),
+            'Ds_Merchant_UrlKO' => $this->url->getUrl(ConfigInterface::CALLBACK_ERROR_URL),
+            'Ds_Merchant_ConsumerLanguage' => $this->language->getLanguageByCode($codeLanguage),
+            'Ds_Merchant_ProductDescription' => $this->productDescription->execute($quote),
+            'Ds_Merchant_PayMethods' => 'C',
+            'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()])
         ];
         return base64_encode(json_encode($result));
     }
