@@ -8,8 +8,12 @@ namespace OAG\Redsys\Model;
 use OAG\Redsys\Gateway\Config\Redsys;
 use OAG\Redsys\Model\Signature;
 use OAG\Redsys\Model\MerchantParameters;
-use Magento\Framework\App\ObjectManager;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Checkout\Model\Type\Onepage;
+use Magento\Customer\Model\Session;
+use Magento\Checkout\Helper\Data;
+use Magento\Customer\Model\Group;
+use Magento\Quote\Model\Quote;
 
 /**
  * Payment information management service.
@@ -36,17 +40,31 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
     private $merchantParameters;
 
     /**
+     * @var Session
+     */
+    private $customerSession;
+
+    /**
+     * @var Data
+     */
+    private $checkoutHelper;
+
+    /**
      * @param CartRepositoryInterface $cartRepository
      * @codeCoverageIgnore
      */
     public function __construct(
         Signature $signature,
         MerchantParameters $merchantParameters,
-        CartRepositoryInterface $cartRepository
+        CartRepositoryInterface $cartRepository,
+        Session $customerSession,
+        Data $checkoutHelper
     ) {
         $this->cartRepository = $cartRepository;
         $this->signature = $signature;
         $this->merchantParameters = $merchantParameters;
+        $this->customerSession = $customerSession;
+        $this->checkoutHelper = $checkoutHelper;
     }
 
 
@@ -58,6 +76,11 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
         try {
             /** @var \Magento\Quote\Model\Quote $quote */
             $quote = $this->cartRepository->getActive($cartId);
+
+            if ($this->getCheckoutMethod($quote) === Onepage::METHOD_GUEST) {
+                $this->prepareGuestQuote($quote);
+            }
+
             $quote->collectTotals();
 
             if (!$quote->getGrandTotal()) {
@@ -90,5 +113,39 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
             $this->logger->debug($e->getMessage());
             return json_encode([$e->getMessage()]);
         }
+    }
+
+    /**
+     * Get quote checkout method
+     *
+     * @return string
+     */
+    protected function getCheckoutMethod($quote)
+    {
+        if ($this->customerSession->isLoggedIn()) {
+            return Onepage::METHOD_CUSTOMER;
+        }
+        if (!$quote->getCheckoutMethod()) {
+            if ($this->checkoutHelper->isAllowedGuestCheckout($quote)) {
+                $quote->setCheckoutMethod(Onepage::METHOD_GUEST);
+            } else {
+                $quote->setCheckoutMethod(Onepage::METHOD_REGISTER);
+            }
+        }
+        return $quote->getCheckoutMethod();
+    }
+
+    /**
+     * Prepare quote for guest checkout order submit
+     *
+     * @param Quote $quote
+     * @return void
+     */
+    private function prepareGuestQuote(Quote $quote)
+    {
+        $quote->setCustomerId(null)
+            ->setCustomerEmail($quote->getBillingAddress()->getEmail())
+            ->setCustomerIsGuest(true)
+            ->setCustomerGroupId(Group::NOT_LOGGED_IN_ID);
     }
 }

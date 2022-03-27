@@ -6,12 +6,14 @@
                 <active>0</active>
                 <model>RedsysFacade</model>
                 <environment>sandbox</environment>
+                <order_status>processing</order_status>
+                <payment_action>authorize_capture</payment_action>
                 <title>Redsys Payment Gateway</title>
                 <merchantcode></merchantcode>
                 <transaction_type>0</transaction_type>
                 <terminal></terminal>
                 <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-                <can_initialize>1</can_initialize>
+                <can_initialize>0</can_initialize>
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
                 <can_void>0</can_void>
