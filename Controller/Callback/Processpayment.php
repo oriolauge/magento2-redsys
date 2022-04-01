@@ -13,13 +13,15 @@ use Magento\Framework\Phrase;
 use Magento\Framework\Controller\Result\JsonFactory;
 use OAG\Redsys\Model\Signature;
 use OAG\Redsys\Model\QuoteRepository;
+use OAG\Redsys\Model\MerchantParameters\TotalAmount;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
+
 
 class Processpayment extends Action implements CsrfAwareActionInterface, HttpPostActionInterface
 {
     /**
-     * @var OAG\Redsys\Model\Base64Url
+     * @var Base64Url
      */
     private $base64Url;
 
@@ -35,7 +37,7 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
     private $signature;
 
     /**
-     * @var OAG\Redsys\Model\QuoteRepository
+     * @var QuoteRepository
      */
     private $quoteRepository;
 
@@ -50,7 +52,21 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
     private $quoteManagement;
 
     /**
+     * @var TotalAmount
+     */
+    protected $totalAmount;
+
+    /**
+     * @inheritDoc
+     *
      * @param Context $context
+     * @param Base64Url $base64Url
+     * @param JsonFactory $resultJsonFactory
+     * @param Signature $signature
+     * @param QuoteRepository $quoteRepository
+     * @param CartRepositoryInterface $cartRepository
+     * @param CartManagementInterface $quoteManagement
+     * @param TotalAmount $totalAmount
      */
     public function __construct(
         Context $context,
@@ -59,7 +75,8 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         Signature $signature,
         QuoteRepository $quoteRepository,
         CartRepositoryInterface $cartRepository,
-        CartManagementInterface $quoteManagement
+        CartManagementInterface $quoteManagement,
+        TotalAmount $totalAmount
     )
     {
         parent::__construct($context);
@@ -69,9 +86,14 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         $this->quoteRepository = $quoteRepository;
         $this->cartRepository = $cartRepository;
         $this->quoteManagement = $quoteManagement;
+        $this->totalAmount = $totalAmount;
     }
 
-
+    /**
+     * Execute controller action
+     *
+     * @return jsonResponse
+     */
     public function execute()
     {
         $merchantParametersJson = $this->base64Url->decode(
@@ -95,21 +117,39 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
             return $this->returnJsonError('Signature not match');
         }
 
-        $quote = $this->getQuote($merchantParameters);
-        if (!$quote || !$quote->getId()) {
-            return $this->returnJsonError('Quote not found');
+        if (!empty($merchantParameters['Ds_Response']) && intval($merchantParameters['Ds_Response']) <= 99) {
+            $quote = $this->getQuote($merchantParameters);
+            if (!$quote || !$quote->getId()) {
+                return $this->returnJsonError('Quote not found');
+            }
+
+            if (empty($merchantParameters['Ds_Amount']) ||
+                $this->totalAmount->execute($quote) != $merchantParameters['Ds_Amount']) {
+                return $this->returnJsonError('Quote amount is not the same');
+            }
+
+            /**
+             * This is an extra validation because if the order has some problem,
+             * we will be sure that we can contact to the client
+             */
+            if (!$quote->getCustomerEmail()) {
+                return $this->returnJsonError('Quote has not an email');
+            }
+
+            try {
+                $order = $this->placeQuote($quote);
+            } catch(\Exception $e) {
+                return $this->returnJsonError($e->getMessage());
+            }
+
+            $resultPage = $this->resultJsonFactory->create();
+            $resultPage->setData([
+                'success' => true,
+                'message' => __('Order completed: ' . $order->getId())
+            ]);
+            return $resultPage;
         }
-
-        $order = $this->placeQuote($quote);
-
-        //@todo: create order and invoce.
-
-        $resultPage = $this->resultJsonFactory->create();
-        $resultPage->setData([
-            'success' => true,
-            'message' => __('Order completed: ' . $order->getId())
-        ]);
-        return $resultPage;
+        return $this->returnJsonError('Transaction not autorized');
     }
 
 	/**
@@ -131,6 +171,9 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
 
     /**
      * Validate if Redsys send us the required params
+     *
+     * @param RequestInterface $request
+     * @return boolean|null
      */
     public function validateForCsrf(RequestInterface $request): ?bool
     {
@@ -143,6 +186,12 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         return false;
     }
 
+    /**
+     * Convert message to json response
+     *
+     * @param string $message
+     * @return jsonObjetc
+     */
     protected function returnJsonError(string $message)
     {
         $resultPage = $this->resultJsonFactory->create();
@@ -160,10 +209,10 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
      * so it's more efficient to load quote by his entity_id.
      *
      * if for some reason we don't have the quote_id, we will try to load quote by
-     * reserve_order_id
+     * reserve_order_id (worst case)
      *
      * @param array $merchantParameters
-     * @return Quote
+     * @return Quote|boolean
      */
     protected function getQuote(array $merchantParameters)
     {
@@ -177,14 +226,24 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
             true
         );
 
-        if ($merchantData && !empty($merchantData['quote_id']) && is_numeric($merchantData['quote_id'])) {
-            $quote = $this->cartRepository->getActive($merchantData['quote_id']);
-        } else {
-            $quote = $this->quoteRepository->loadQuoteByReservedOrderId($merchantParameters['Ds_Order']);
+        try {
+            if ($merchantData && !empty($merchantData['quote_id']) && is_numeric($merchantData['quote_id'])) {
+                $quote = $this->cartRepository->getActive($merchantData['quote_id']);
+            } else {
+                $quote = $this->quoteRepository->getActiveByReservedOrderId($merchantParameters['Ds_Order']);
+            }
+            return $quote;
+        } catch (\Exception $e) {
+            return false;
         }
-        return $quote;
     }
 
+    /**
+     * Place order
+     *
+     * @param Quote $quote
+     * @return Order
+     */
     protected function placeQuote($quote)
     {
         $quote->collectTotals();

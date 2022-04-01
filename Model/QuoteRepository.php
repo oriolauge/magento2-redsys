@@ -2,6 +2,7 @@
 namespace OAG\Redsys\Model;
 
 use Magento\Quote\Model\QuoteFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
 
 class QuoteRepository 
@@ -29,8 +30,11 @@ class QuoteRepository
     /** @return \Magento\Quote\Model\Quote **/
     public function loadQuoteByReservedOrderId(string $incrementId) 
     {
-       $quote = $this->quoteFactory->create();
-       $this->quoteResource->load($quote, $incrementId, self::RESERVED_ORDER_FIELD);
-       return $quote;
+        $quote = $this->quoteFactory->create();
+        $this->quoteResource->load($quote, $incrementId, self::RESERVED_ORDER_FIELD);
+        if (!$quote->getIsActive()) {
+            throw NoSuchEntityException::singleField(self::RESERVED_ORDER_FIELD, $incrementId);
+        }
+        return $quote;
     }
 }
