@@ -28,7 +28,7 @@ class QuoteRepository
     }
  
     /** @return \Magento\Quote\Model\Quote **/
-    public function loadQuoteByReservedOrderId(string $incrementId) 
+    public function getActiveByReservedOrderId(string $incrementId)
     {
         $quote = $this->quoteFactory->create();
         $this->quoteResource->load($quote, $incrementId, self::RESERVED_ORDER_FIELD);
