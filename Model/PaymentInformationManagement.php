@@ -110,6 +110,7 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
                 'Ds_Signature' => $this->signature->generateRequestSignature($incrementId, $merchantParameters)
             ]);
         } catch (\Exception $e) {
+            //@todo: test the error exceptions in frontend
             $this->logger->debug($e->getMessage());
             return json_encode([$e->getMessage()]);
         }

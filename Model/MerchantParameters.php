@@ -3,6 +3,7 @@ namespace OAG\Redsys\Model;
 use OAG\Redsys\Model\MerchantParameters\Currency;
 use OAG\Redsys\Model\MerchantParameters\Language;
 use OAG\Redsys\Model\MerchantParameters\ProductDescription;
+use OAG\Redsys\Model\MerchantParameters\TotalAmount;
 use OAG\Redsys\Model\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -39,6 +40,12 @@ class MerchantParameters
     protected $url;
 
     /**
+     * @var TotalAmount
+     * @todo: conver to interface
+     */
+    protected $totalAmount;
+
+    /**
      * Construct function
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -51,13 +58,15 @@ class MerchantParameters
         Currency $currency,
         Language $language,
         ProductDescription $productDescription,
-        UrlInterface $url
+        UrlInterface $url,
+        TotalAmount $totalAmount
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->currency = $currency;
         $this->language = $language;
         $this->productDescription = $productDescription;
         $this->url = $url;
+        $this->totalAmount = $totalAmount;
     }
 
     /**
@@ -80,7 +89,7 @@ class MerchantParameters
          * DS_MERCHANT_EMV3DS
          */
         $result = [
-            'Ds_Merchant_Amount' => $this->convertAmountToRedsysFormat($quote->getGrandTotal()),
+            'Ds_Merchant_Amount' => $this->totalAmount->execute($quote),
             'Ds_Merchant_Order' => $quote->getReservedOrderId(),
             'Ds_Merchant_MerchantCode' => $merchantCode,
             'Ds_Merchant_Currency' => $this->currency->getCurrency($quote->getQuoteCurrencyCode()),
@@ -95,16 +104,5 @@ class MerchantParameters
             'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()])
         ];
         return base64_encode(json_encode($result));
-    }
-
-    /**
-     * Convert amount to Redsys format
-     *
-     * @param float $amount
-     * @return float
-     */
-    protected function convertAmountToRedsysFormat($amount): float
-    {
-        return floatval($amount) * 100;
     }
 }
