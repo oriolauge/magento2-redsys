@@ -26,5 +26,4 @@ class ProductDescription
         $result = implode(', ', $descriptionQuote);
         return strlen($result) <= 125 ? $result : '';
     }
-
 }
