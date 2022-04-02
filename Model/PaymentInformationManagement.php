@@ -14,6 +14,7 @@ use Magento\Customer\Model\Session;
 use Magento\Checkout\Helper\Data;
 use Magento\Customer\Model\Group;
 use Magento\Quote\Model\Quote;
+use Psr\Log\LoggerInterface;
 
 /**
  * Payment information management service.
@@ -50,21 +51,34 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
     private $checkoutHelper;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @inheritDoc
+     *
+     * @param Signature $signature
+     * @param MerchantParameters $merchantParameters
      * @param CartRepositoryInterface $cartRepository
-     * @codeCoverageIgnore
+     * @param Session $customerSession
+     * @param Data $checkoutHelper
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Signature $signature,
         MerchantParameters $merchantParameters,
         CartRepositoryInterface $cartRepository,
         Session $customerSession,
-        Data $checkoutHelper
+        Data $checkoutHelper,
+        LoggerInterface $logger
     ) {
         $this->cartRepository = $cartRepository;
         $this->signature = $signature;
         $this->merchantParameters = $merchantParameters;
         $this->customerSession = $customerSession;
         $this->checkoutHelper = $checkoutHelper;
+        $this->logger = $logger;
     }
 
 
@@ -110,9 +124,11 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
                 'Ds_Signature' => $this->signature->generateRequestSignature($incrementId, $merchantParameters)
             ]);
         } catch (\Exception $e) {
-            //@todo: test the error exceptions in frontend
-            $this->logger->debug($e->getMessage());
-            return json_encode([$e->getMessage()]);
+            $this->logger->error($e);
+            //frontend javascript will catch this exception
+            throw new \Exception(
+                __('We are sorry, something was wrong with place order. Try again or select another payment method.')
+            );
         }
     }
 
