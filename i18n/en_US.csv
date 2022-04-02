@@ -13,3 +13,5 @@
 "Title","Title"
 "Payment method title that will be displayed in checkout","Payment method title that will be displayed in checkout"
 "Transaction denied.","Transaction denied."
+"Transaction authorized.","Transaction authorized."
+"Sorry, We have an error to try to load the cart.","Sorry, We have an error to try to load the cart."

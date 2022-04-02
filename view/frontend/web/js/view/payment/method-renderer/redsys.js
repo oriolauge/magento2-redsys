@@ -6,7 +6,8 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'OAG_Redsys/js/action/get-redsys-payment-information',
         'Magento_Checkout/js/model/full-screen-loader',
-        'OAG_Redsys/js/form-builder'
+        'OAG_Redsys/js/form-builder',
+        'Magento_Customer/js/customer-data'
     ],
     function (
         $,
@@ -15,7 +16,8 @@ define(
         setPaymentInformationAction,
         getRedsysPaymentInformationAction,
         fullScreenLoader,
-        formBuilder
+        formBuilder,
+        customerData
         ) {
         'use strict';
 
@@ -40,7 +42,6 @@ define(
                     this.isPlaceOrderActionAllowed() === true
                 ) {
                     this.isPlaceOrderActionAllowed(false);
-
                     $.when(
                         setPaymentInformationAction(
                             this.messageContainer,
@@ -53,6 +54,9 @@ define(
                         $.when(deferred).always(function () {
                             fullScreenLoader.stopLoader();
                         }).done(function(response) {
+                            //Invalidate minicart cache
+                            customerData.invalidate(['cart']);
+                            //Create post form and redirect to redsys payment mage
                             formBuilder.build(
                                 {
                                     action: window.checkoutConfig.payment.oag_redsys.postUrl,
