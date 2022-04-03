@@ -17,3 +17,5 @@
 "Sorry, We have an error to try to load the cart.","Ho sentim, hem tingut un error al intentar recuperar la teva cistella."
 "We are sorry, something was wrong with place order. Try again or select another payment method.","Ho sentim, alguna cosa ha anat malament al fer la comanda. Prova-ho de nou o selecciona un altre mètode de pagament."
 "Sorry, we have an error to try to load your order.","Ho sentim, hem tingut un error al intentar recuperar la teva comanda."
+"Merchant name that will be dislpayed in Redsys payment page. If value is empty, will be displayed default value configured in Redsys system.","Nom del comerç que es mostrarà a la pàgina de pagament de Redsys. Si el valor està buit, es mostrarà el valor predeterminat configurat al sistema Redsys."
+"Merchant Name","Nom del comerç"
