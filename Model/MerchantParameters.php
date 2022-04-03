@@ -4,6 +4,7 @@ use OAG\Redsys\Model\MerchantParameters\Currency;
 use OAG\Redsys\Model\MerchantParameters\Language;
 use OAG\Redsys\Model\MerchantParameters\ProductDescription;
 use OAG\Redsys\Model\MerchantParameters\TotalAmount;
+use OAG\Redsys\Model\MerchantParameters\Emv3ds;
 use OAG\Redsys\Model\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -46,6 +47,11 @@ class MerchantParameters
     protected $totalAmount;
 
     /**
+     * @var Emv3ds
+     */
+    protected $emv3ds;
+
+    /**
      * Construct function
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -59,7 +65,8 @@ class MerchantParameters
         Language $language,
         ProductDescription $productDescription,
         UrlInterface $url,
-        TotalAmount $totalAmount
+        TotalAmount $totalAmount,
+        Emv3ds $emv3ds
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->currency = $currency;
@@ -67,6 +74,7 @@ class MerchantParameters
         $this->productDescription = $productDescription;
         $this->url = $url;
         $this->totalAmount = $totalAmount;
+        $this->emv3ds = $emv3ds;
     }
 
     /**
@@ -82,11 +90,11 @@ class MerchantParameters
         $transaction = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_TRANSACTION_TYPE, ScopeInterface::SCOPE_STORE);
         $terminal = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_TERMINAL, ScopeInterface::SCOPE_STORE);
         $codeLanguage = $this->scopeConfig->getValue('general/locale/code', ScopeInterface::SCOPE_STORE);
+        $sendEmv3ds = $this->scopeConfig->getValue('general/locale/code', ScopeInterface::SCOPE_STORE);
 
         /**
          * @todo: missign optionals params:
          * Ds_Merchant_Titular
-         * DS_MERCHANT_EMV3DS
          */
         $result = [
             'Ds_Merchant_Amount' => $this->totalAmount->execute($quote),
@@ -101,11 +109,18 @@ class MerchantParameters
             'Ds_Merchant_ConsumerLanguage' => $this->language->getLanguageByCode($codeLanguage),
             'Ds_Merchant_ProductDescription' => $this->productDescription->execute($quote),
             'Ds_Merchant_PayMethods' => 'C',
-            'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()])
+            'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()]),
         ];
 
         if (!empty($merchantName) && strlen($merchantName) <= ConfigInterface::MERCHANT_NAME_MAX_LENGTH) {
             $result['Ds_Merchant_MerchantName'] = $merchantName;
+        }
+
+        if ($sendEmv3ds) {
+            $emv3ds = $this->emv3ds->execute($quote);
+            if ($emv3ds) {
+                $result['Ds_Merchant_EMV3DS'] = json_encode($emv3ds);
+            }
         }
 
         return base64_encode(json_encode($result));

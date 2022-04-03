@@ -19,3 +19,5 @@
 "Sorry, we have an error to try to load your order.","Lo sentimos, tenemos un error al intentar cargar tu pedido."
 "Merchant name that will be dislpayed in Redsys payment page. If value is empty, will be displayed default value configured in Redsys system.","Nombre del comercio que se mostrará en la página de pago de Redsys. Si el valor está vacío, se mostrará el valor predeterminado configurado en el sistema Redsys."
 "Merchant Name","Nombre del comercio"
+"Send optional information to Redsys for better transaction risk check by customer bank.","Envía información optional a Redsys  para mejorar el análisis de riesgo de la transacción por parte del banco del cliente."
+"Send Additional Order data for EMV3DS","Envía información adicional del pedido por EMV3DS"

@@ -30,7 +30,7 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="merchant_name" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="merchant_name" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Merchant Name</label>
                     <validate>validate-length maximum-length-25</validate>
                     <comment><![CDATA[Merchant name that will be dislpayed in Redsys payment page. If value is empty, will be displayed default value configured in Redsys system.]]></comment>
@@ -38,7 +38,7 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="secret_key" translate="label" type="obscure" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="secret_key" translate="label" type="obscure" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Secret Encrypted Key (SHA-256)</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     <comment><![CDATA[Secret key that Redsys send to the merchant]]></comment>
@@ -46,7 +46,7 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="transaction_type" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="transaction_type" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Transaction Type</label>
                     <source_model>OAG\Redsys\Model\Adminhtml\Source\TransactionType</source_model>
                     <comment><![CDATA[Define Transaction Type in Redsys plaform.]]></comment>
@@ -54,14 +54,22 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="terminal" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="terminal" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Terminal Number</label>
                     <comment><![CDATA[Terminal number that Redsys send to the merchant.]]></comment>
                     <depends>
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <group id="oag_redsys_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="80">
+                <field id="send_emv3ds" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Send Additional Order data for EMV3DS</label>
+                    <comment><![CDATA[Send optional information to Redsys for better transaction risk check by customer bank.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <group id="oag_redsys_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="100">
                     <label>Country Specific Settings</label>
                     <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
                     <depends>

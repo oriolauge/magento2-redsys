@@ -19,3 +19,5 @@
 "Sorry, we have an error to try to load your order.","Sorry, we have an error to try to load your order."
 "Merchant name that will be dislpayed in Redsys payment page. If value is empty, will be displayed default value configured in Redsys system.","Merchant name that will be dislpayed in Redsys payment page. If value is empty, will be displayed default value configured in Redsys system."
 "Merchant Name","Merchant Name"
+"Send optional information to Redsys for better transaction risk check by customer bank.","Send optional information to Redsys for better transaction risk check by customer bank."
+"Send Additional Order data for EMV3DS","Send Additional Order data for EMV3DS"
