@@ -12,7 +12,7 @@ class TransactionType implements OptionSourceInterface
 
     /**
      * Possible Transaction types
-     *
+     * @todo In some module updates, we can add new types
      * @return array
      */
     public function toOptionArray(): array

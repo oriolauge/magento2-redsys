@@ -1,6 +1,6 @@
 <?php
 namespace OAG\Redsys\Model\MerchantParameters;
-use Magento\Quote\Model\Quote;
+use Magento\Quote\Api\Data\CartInterface;
 
 /**
  * Class ProductDescription
@@ -8,13 +8,15 @@ use Magento\Quote\Model\Quote;
  */
 class ProductDescription
 {
+    const MAX_LENGHT = 125;
+
     /**
-     * Undocumented function
+     * Create Product Description
      *
      * @param CartInterface $quote
      * @return string
      */
-    public function execute(Quote $quote): string
+    public function execute(CartInterface $quote): string
     {
         $descriptionQuote = [];
         $items = $quote->getAllVisibleItems();
@@ -24,6 +26,6 @@ class ProductDescription
         }
 
         $result = implode(', ', $descriptionQuote);
-        return strlen($result) <= 125 ? $result : '';
+        return strlen($result) <= self::MAX_LENGHT ? $result : '';
     }
 }

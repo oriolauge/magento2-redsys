@@ -25,6 +25,14 @@ class Success extends Action implements HttpGetActionInterface
      */
     private $orderFactory;
 
+    /**
+     * @inheritDoc
+     *
+     * @param Context $context
+     * @param Session $checkoutSession
+     * @param CartRepositoryInterface $cartRepository
+     * @param OrderFactory $orderFactory
+     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
@@ -37,6 +45,12 @@ class Success extends Action implements HttpGetActionInterface
         $this->cartRepository = $cartRepository;
         $this->orderFactory = $orderFactory;
     }
+
+    /**
+     * @inheritDoc
+     *
+     * @return void
+     */
     public function execute()
     {
         $quoteId = $this->checkoutSession->getQuoteId();
@@ -50,6 +64,11 @@ class Success extends Action implements HttpGetActionInterface
                  * to find the order quickly
                  */
                 $order = $this->orderFactory->create()->loadByIncrementIdAndStoreId($incrementId, $storeId);
+
+                if (!$order->getId()) {
+                    throw new \Exception(__('Sorry, we have an error to try to load your order.'));
+                }
+
                 $this->checkoutSession->setLastQuoteId($quoteId);
                 $this->checkoutSession->setLastSuccessQuoteId($quoteId);
                 $this->checkoutSession->setLastOrderId($order->getId());
@@ -58,7 +77,6 @@ class Success extends Action implements HttpGetActionInterface
                 $this->messageManager->addSuccessMessage(__('Transaction authorized.'));
                 $this->_redirect('checkout/onepage/success');
             } catch (\Exception $e) {
-                //@todo: needs to be tested
                 $this->messageManager->addErrorMessage($e->getMessage());
                 $this->_redirect('checkout/cart');
             }

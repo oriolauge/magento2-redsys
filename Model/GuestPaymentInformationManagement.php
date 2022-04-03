@@ -1,36 +1,43 @@
 <?php
 namespace OAG\Redsys\Model;
+use Magento\Quote\Model\QuoteIdMaskFactory;
+use OAG\Redsys\Api\RedsysPaymentInformationManagementInterface;
+use OAG\Redsys\Api\GuestRedsysPaymentInformationManagementInterface;
 
 /**
  * Payment information management service.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GuestPaymentInformationManagement implements \OAG\Redsys\Api\GuestRedsysPaymentInformationManagementInterface
+class GuestPaymentInformationManagement implements GuestRedsysPaymentInformationManagementInterface
 {
     /**
-     * @var \Magento\Quote\Model\QuoteIdMaskFactory
+     * @var QuoteIdMaskFactory
      */
     protected $quoteIdMaskFactory;
 
     /**
-     * @var \OAG\Redsys\Api\RedsysPaymentInformationManagementInterface
+     * @var RedsysPaymentInformationManagementInterface
      */
     protected $redsysPaymentInformationManagement;
 
     /**
-     * @param \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory
+     * @inheritDoc
+     *
+     * @param QuoteIdMaskFactory $quoteIdMaskFactory
+     * @param RedsysPaymentInformationManagementInterface $redsysPaymentInformationManagement
      */
     public function __construct(
-        \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory,
-        \OAG\Redsys\Api\RedsysPaymentInformationManagementInterface $redsysPaymentInformationManagement
+        QuoteIdMaskFactory $quoteIdMaskFactory,
+        RedsysPaymentInformationManagementInterface $redsysPaymentInformationManagement
     ) {
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->redsysPaymentInformationManagement = $redsysPaymentInformationManagement;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     *
+     * @param string $cartId
+     * @return void
      */
     public function getPaymentInformation($cartId)
     {

@@ -3,8 +3,7 @@ namespace OAG\Redsys\Model;
 
 /**
  * This class is copied from Redsys examples because Redsys
- * Seems makes this changes in his server to send us some
- * values
+ * makes this changes in his server to send us some values
  */
 class Base64Url
 {

@@ -18,11 +18,9 @@ final class RedsysConfigProvider implements ConfigProviderInterface
     private $config;
 
     /**
-     * ConfigProvider constructor.
+     * @inheritDoc
+     *
      * @param Config $config
-     * @param SessionManagerInterface $session
-     * @param RequestInterface $request
-     * @param AssetRepository $assetRepository
      */
     public function __construct(
         Config $config

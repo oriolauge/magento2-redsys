@@ -18,42 +18,40 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Payment information management service.
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInformationManagementInterface
 {
     /**
      * @var CartRepositoryInterface
      */
-    private $cartRepository;
+    protected $cartRepository;
 
     /**
      * @var Signature
      * @todo: convert to interface
      */
-    private $signature;
+    protected $signature;
 
     /**
      * @var MerchantParameters
      * @todo: convert to interface
      */
-    private $merchantParameters;
+    protected $merchantParameters;
 
     /**
      * @var Session
      */
-    private $customerSession;
+    protected $customerSession;
 
     /**
      * @var Data
      */
-    private $checkoutHelper;
+    protected $checkoutHelper;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * @inheritDoc
@@ -158,7 +156,7 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
      * @param Quote $quote
      * @return void
      */
-    private function prepareGuestQuote(Quote $quote)
+    protected function prepareGuestQuote(Quote $quote)
     {
         $quote->setCustomerId(null)
             ->setCustomerEmail($quote->getBillingAddress()->getEmail())

@@ -16,40 +16,40 @@ use OAG\Redsys\Model\QuoteRepository;
 use OAG\Redsys\Model\MerchantParameters\TotalAmount;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
-
+use Magento\Quote\Api\Data\CartInterface;
 
 class Processpayment extends Action implements CsrfAwareActionInterface, HttpPostActionInterface
 {
     /**
      * @var Base64Url
      */
-    private $base64Url;
+    protected $base64Url;
 
     /**
      * @var JsonFactory
      */
-    private $resultJsonFactory;
+    protected $resultJsonFactory;
 
     /**
      * @var Signature
      * @todo: convert to interface
      */
-    private $signature;
+    protected $signature;
 
     /**
      * @var QuoteRepository
      */
-    private $quoteRepository;
+    protected $quoteRepository;
 
     /**
      * @var CartRepositoryInterface
      */
-    private $cartRepository;
+    protected $cartRepository;
 
     /**
      * @var CartManagementInterface
      */
-    private $quoteManagement;
+    protected $quoteManagement;
 
     /**
      * @var TotalAmount
@@ -241,10 +241,10 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
     /**
      * Place order
      *
-     * @param Quote $quote
+     * @param CartInterface $quote
      * @return Order
      */
-    protected function placeQuote($quote)
+    protected function placeQuote(CartInterface $quote)
     {
         $quote->collectTotals();
         return $this->quoteManagement->submit($quote);

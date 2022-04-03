@@ -17,6 +17,12 @@ class Signature
      */
     protected $base64Url;
 
+    /**
+     * @inheritDoc
+     *
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Base64Url $base64Url
+     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         Base64Url $base64Url
@@ -73,16 +79,16 @@ class Signature
      */
     protected function encrypt3DES(string $message, string $key): string
     {
-        $bytes = [0,0,0,0,0,0,0,0];
+        $bytes = [0, 0, 0, 0, 0, 0, 0, 0];
         $iv = implode(array_map("chr", $bytes));
-        $long = ceil(strlen($message) / 8) * 8;
+        $long = ceil(strlen($message) / 16) * 16;
         $message = $message . str_repeat("\0", $long - strlen($message));
         return substr(openssl_encrypt(
             $message,
             'des-ede3-cbc',
             $key,
             OPENSSL_RAW_DATA,
-            "\0\0\0\0\0\0\0\0"
+            $iv
         ), 0, $long);
     }
 }
