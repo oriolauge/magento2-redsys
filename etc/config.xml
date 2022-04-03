@@ -9,7 +9,8 @@
                 <order_status>processing</order_status>
                 <payment_action>authorize_capture</payment_action>
                 <title>Redsys Payment Gateway</title>
-                <merchantcode></merchantcode>
+                <merchant_code></merchant_code>
+                <merchant_name></merchant_name>
                 <transaction_type>0</transaction_type>
                 <terminal></terminal>
                 <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />

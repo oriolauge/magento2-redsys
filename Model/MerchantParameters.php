@@ -77,7 +77,8 @@ class MerchantParameters
      */
     public function execute(Quote $quote): string
     {
-        $merchantCode = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_MERCHANTCODE, ScopeInterface::SCOPE_STORE);
+        $merchantCode = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_MERCHANT_CODE, ScopeInterface::SCOPE_STORE);
+        $merchantName = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_MERCHANT_NAME, ScopeInterface::SCOPE_STORE);
         $transaction = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_TRANSACTION_TYPE, ScopeInterface::SCOPE_STORE);
         $terminal = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_TERMINAL, ScopeInterface::SCOPE_STORE);
         $codeLanguage = $this->scopeConfig->getValue('general/locale/code', ScopeInterface::SCOPE_STORE);
@@ -85,7 +86,6 @@ class MerchantParameters
         /**
          * @todo: missign optionals params:
          * Ds_Merchant_Titular
-         * Ds_Merchant_MerchantName
          * DS_MERCHANT_EMV3DS
          */
         $result = [
@@ -103,6 +103,11 @@ class MerchantParameters
             'Ds_Merchant_PayMethods' => 'C',
             'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()])
         ];
+
+        if (!empty($merchantName) && strlen($merchantName) <= ConfigInterface::MERCHANT_NAME_MAX_LENGTH) {
+            $result['Ds_Merchant_MerchantName'] = $merchantName;
+        }
+
         return base64_encode(json_encode($result));
     }
 }

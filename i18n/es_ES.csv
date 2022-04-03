@@ -17,3 +17,5 @@
 "Sorry, We have an error to try to load the cart.","Lo sentimos, tenemos un error al intentar cargar el carrito."
 "We are sorry, something was wrong with place order. Try again or select another payment method.","Lo sentimos, algo ha ido mal al intentar hacer el pedido. Inténtalo de nuevo o selecciona otro método de pago."
 "Sorry, we have an error to try to load your order.","Lo sentimos, tenemos un error al intentar cargar tu pedido."
+"Merchant name that will be dislpayed in Redsys payment page. If value is empty, will be displayed default value configured in Redsys system.","Nombre del comercio que se mostrará en la página de pago de Redsys. Si el valor está vacío, se mostrará el valor predeterminado configurado en el sistema Redsys."
+"Merchant Name","Nombre del comercio"
