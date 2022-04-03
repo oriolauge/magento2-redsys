@@ -6,7 +6,7 @@ use OAG\Redsys\Model\ConfigInterface;
 
 /**
  * Class Redsys
- * @package Magestio\Redsys\Gateway\Config
+ * @package OAG\Redsys\Gateway\Config
  */
 class Redsys extends \Magento\Payment\Gateway\Config\Config
 {
