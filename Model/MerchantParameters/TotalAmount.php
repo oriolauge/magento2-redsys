@@ -1,5 +1,6 @@
 <?php
 namespace OAG\Redsys\Model\MerchantParameters;
+use Magento\Quote\Api\Data\CartInterface;
 
 /**
  * Class TotalAmount
@@ -10,10 +11,10 @@ class TotalAmount
     /**
      * Convert amount to Redsys format
      *
-     * @param float $amount
+     * @param CartInterface $quote
      * @return float
      */
-    public function execute($quote): float
+    public function execute(CartInterface $quote): float
     {
         return floatval($quote->getGrandTotal()) * 100;
     }

@@ -14,5 +14,6 @@
 "Payment method title that will be displayed in checkout","Títol del métode de pagament que es mostrarà en el procés de compra"
 "Transaction denied.","Transacció denegada."
 "Transaction authorized.","Transacció autoritzada."
-"Sorry, We have an error to try to load the cart.","Ho sento, hem tingut un error al intentar recuperar la teva cistella."
+"Sorry, We have an error to try to load the cart.","Ho sentim, hem tingut un error al intentar recuperar la teva cistella."
 "We are sorry, something was wrong with place order. Try again or select another payment method.","Ho sentim, alguna cosa ha anat malament al fer la comanda. Prova-ho de nou o selecciona un altre mètode de pagament."
+"Sorry, we have an error to try to load your order.","Ho sentim, hem tingut un error al intentar recuperar la teva comanda."

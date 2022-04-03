@@ -6,6 +6,11 @@ use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterfac
 
 class Error extends Action implements HttpGetActionInterface
 {
+    /**
+     * Add generic message and redirect to cart
+     *
+     * @return void
+     */
     public function execute()
     {
         $this->messageManager->addErrorMessage(__('Transaction denied.'));
