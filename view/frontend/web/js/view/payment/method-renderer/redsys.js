@@ -56,7 +56,7 @@ define(
                         }).done(function(response) {
                             //Invalidate minicart cache
                             customerData.invalidate(['cart']);
-                            //Create post form and redirect to redsys payment mage
+                            //Create post form and redirect to redsys payment page
                             formBuilder.build(
                                 {
                                     action: window.checkoutConfig.payment.oag_redsys.postUrl,
