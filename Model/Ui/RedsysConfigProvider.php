@@ -3,6 +3,7 @@
 namespace OAG\Redsys\Model\Ui;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use OAG\Redsys\Gateway\Config\Redsys as Config;
+use Magento\Framework\View\Asset\Repository as AssetRepository;
 
 /**
  * Class RedsysConfigProvider
@@ -18,14 +19,21 @@ final class RedsysConfigProvider implements ConfigProviderInterface
     private $config;
 
     /**
+     * @var AssetRepository
+     */
+    private $assetRepository;
+
+    /**
      * @inheritDoc
      *
      * @param Config $config
      */
     public function __construct(
-        Config $config
+        Config $config,
+        AssetRepository $assetRepository
     ) {
         $this->config = $config;
+        $this->assetRepository = $assetRepository;
     }
 
     /**
@@ -39,7 +47,8 @@ final class RedsysConfigProvider implements ConfigProviderInterface
             'payment' => [
                 self::CODE => [
                     'isActive' => $this->config->isActive(),
-                    'postUrl' => $this->config->getEnvironmentUrl()
+                    'postUrl' => $this->config->getEnvironmentUrl(),
+                    'icon' => $this->assetRepository->createAsset('OAG_Redsys::images/icon_cards.png')->getUrl()
                 ]
             ]
         ];
