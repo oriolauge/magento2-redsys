@@ -5,6 +5,7 @@
                class="radio"
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
         <label class="label oag_redsys-payment-label" data-bind="attr: {'for': getCode()}">
+            <img data-bind="attr: {'src': cardIcon()}" alt="Visa, Mastercard" class="payment-icon" />
             <span data-bind="text: getTitle()"></span>
         </label>
     </div>

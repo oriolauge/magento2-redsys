@@ -69,6 +69,12 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sort order</label>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
                 <group id="oag_redsys_country_specific" translate="label" showInDefault="1" showInWebsite="1" sortOrder="100">
                     <label>Country Specific Settings</label>
                     <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
