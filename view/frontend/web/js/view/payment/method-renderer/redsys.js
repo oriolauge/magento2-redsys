@@ -27,7 +27,7 @@ define(
                 code: 'oag_redsys'
             },
             redirectAfterPlaceOrder: false,
-            cardIcon: function(){
+            cardIcon: function() {
                 return window.checkoutConfig.payment.oag_redsys.icon;
             },
             placeOrder: function (data, event) {
