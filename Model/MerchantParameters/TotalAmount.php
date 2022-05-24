@@ -12,10 +12,10 @@ class TotalAmount
      * Convert amount to Redsys format
      *
      * @param CartInterface $quote
-     * @return float
+     * @return string
      */
-    public function execute(CartInterface $quote): float
+    public function execute(CartInterface $quote): string
     {
-        return floatval($quote->getGrandTotal()) * 100;
+        return number_format($quote->getGrandTotal(), 2, '', '');
     }
 }

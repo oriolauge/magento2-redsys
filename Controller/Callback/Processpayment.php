@@ -222,7 +222,7 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         }
 
         $merchantData = json_decode(
-            htmlspecialchars_decode($merchantParameters['Ds_MerchantData']),
+            urldecode($merchantParameters['Ds_MerchantData']),
             true
         );
 
