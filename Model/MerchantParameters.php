@@ -109,7 +109,7 @@ class MerchantParameters
             'Ds_Merchant_ConsumerLanguage' => $this->language->getLanguageByCode($codeLanguage),
             'Ds_Merchant_ProductDescription' => $this->productDescription->execute($quote),
             'Ds_Merchant_PayMethods' => 'C',
-            'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()]),
+            'Ds_Merchant_MerchantData' => json_encode(['quote_id' => $quote->getId()])
         ];
 
         if (!empty($merchantName) && strlen($merchantName) <= ConfigInterface::MERCHANT_NAME_MAX_LENGTH) {
