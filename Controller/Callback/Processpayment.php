@@ -123,6 +123,15 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
                 return $this->returnJsonError('Quote not found');
             }
 
+            /**
+             * We don't know if quote was loaded by increment id or quote_id, so we
+             * will check if current increment id is the same that Redsys
+             * send to our system
+             */
+            if ($quote->getReservedOrderId() != $merchantParameters['Ds_Order']) {
+                return $this->returnJsonError('Quote Increment Id is not the same');
+            }
+
             if (empty($merchantParameters['Ds_Amount']) ||
                 $this->totalAmount->execute($quote) != $merchantParameters['Ds_Amount']) {
                 return $this->returnJsonError('Quote amount is not the same');
