@@ -3,11 +3,10 @@
 namespace OAG\Redsys\Controller\Callback;
 
 use OAG\Redsys\Model\Base64Url;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -18,8 +17,13 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Api\Data\CartInterface;
 
-class Processpayment extends Action implements CsrfAwareActionInterface, HttpPostActionInterface
+class Processpayment implements CsrfAwareActionInterface, HttpPostActionInterface
 {
+    /**
+     * @var RequestInterface
+     */
+    protected $request;
+
     /**
      * @var Base64Url
      */
@@ -57,9 +61,13 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
     protected $totalAmount;
 
     /**
+     * @var RedirectFactory
+     */
+    protected $resultRedirectFactory;
+
+    /**
      * @inheritDoc
      *
-     * @param Context $context
      * @param Base64Url $base64Url
      * @param JsonFactory $resultJsonFactory
      * @param Signature $signature
@@ -67,19 +75,21 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
      * @param CartRepositoryInterface $cartRepository
      * @param CartManagementInterface $quoteManagement
      * @param TotalAmount $totalAmount
+     * @param RequestInterface $request
+     * @param resultRedirectFactory $resultRedirectFactory
      */
     public function __construct(
-        Context $context,
         Base64Url $base64Url,
         JsonFactory $resultJsonFactory,
         Signature $signature,
         QuoteRepository $quoteRepository,
         CartRepositoryInterface $cartRepository,
         CartManagementInterface $quoteManagement,
-        TotalAmount $totalAmount
+        TotalAmount $totalAmount,
+        RequestInterface $request,
+        RedirectFactory $resultRedirectFactory
     )
     {
-        parent::__construct($context);
         $this->base64Url = $base64Url;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->signature = $signature;
@@ -87,6 +97,8 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
         $this->cartRepository = $cartRepository;
         $this->quoteManagement = $quoteManagement;
         $this->totalAmount = $totalAmount;
+        $this->request = $request;
+        $this->resultRedirectFactory = $resultRedirectFactory;
     }
 
     /**
@@ -97,11 +109,12 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
     public function execute()
     {
         $merchantParametersJson = $this->base64Url->decode(
-            $this->getRequest()->getParam('Ds_MerchantParameters')
+            $this->request->getParam('Ds_MerchantParameters')
         );
+
         $merchantParameters = json_decode($merchantParametersJson, true);
-        if (count($merchantParameters) == 0) {
-            return $this->returnJsonError('Missign MerchantParameters');
+        if (!is_array($merchantParameters) || count($merchantParameters) === 0) {
+            return $this->returnJsonError('Missign MerchantParameters or error format');
         }
 
         if (empty($merchantParameters['Ds_Order'])) {
@@ -110,10 +123,10 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
 
         $signature = $this->signature->generateResponseSignature(
             $merchantParameters['Ds_Order'],
-            $this->getRequest()->getParam('Ds_MerchantParameters')
+            $this->request->getParam('Ds_MerchantParameters')
         );
 
-        if ($signature !== $this->getRequest()->getParam('Ds_Signature')) {
+        if ($signature !== $this->request->getParam('Ds_Signature')) {
             return $this->returnJsonError('Signature not match');
         }
 
@@ -154,7 +167,7 @@ class Processpayment extends Action implements CsrfAwareActionInterface, HttpPos
             $resultPage = $this->resultJsonFactory->create();
             $resultPage->setData([
                 'success' => true,
-                'message' => __('Order completed: ' . $order->getId())
+                'message' => __('Order completed: %1', $order->getId())
             ]);
             return $resultPage;
         }
