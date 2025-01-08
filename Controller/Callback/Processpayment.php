@@ -238,15 +238,13 @@ class Processpayment implements CsrfAwareActionInterface, HttpPostActionInterfac
      */
     protected function getQuote(array $merchantParameters)
     {
-        $quote = false;
-        if (empty($merchantParameters['Ds_MerchantData'])) {
-            return $quote;
+        $merchantData = [];
+        if (!empty($merchantParameters['Ds_MerchantData']) && is_string($merchantParameters['Ds_MerchantData'])) {
+            $merchantData = json_decode(
+                urldecode($merchantParameters['Ds_MerchantData']),
+                true
+            );
         }
-
-        $merchantData = json_decode(
-            urldecode($merchantParameters['Ds_MerchantData']),
-            true
-        );
 
         try {
             if ($merchantData && !empty($merchantData['quote_id']) && is_numeric($merchantData['quote_id'])) {
