@@ -24,7 +24,7 @@
 "Missign MerchantParameters or error format","Falta MerchantParameters o hay un error en el formato"
 "Missign Ds_Order","Falta Ds_Order"
 "Signature not match","La firma no coincide"
-"Quote not found","Carrito no encontrada"
+"Quote not found","Carrito no encontrado"
 "Quote Increment Id is not the same","El identificador del carrito no es el mismo"
 "Quote amount is not the same","El importe del carrito no es el mismo"
 "Quote has not an email","El carrito no tiene email"
