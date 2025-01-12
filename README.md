@@ -3,7 +3,9 @@ This module adds an integration to pay with Redsys system (redirection mode).
 
 Currently, we only accept "authorization" method (standard payment), but in the future we will implement others Redsys methods like "pre-authorization", refunds, etc.
 
-If you want more information about Redsys system (redirection mode), you can click on the next [link](https://pagosonline.redsys.es/conexion-redireccion.html)
+If you want more information about Redsys system (redirection mode), you can click on the next [link](https://pagosonline.redsys.es/conexion-redireccion.html).
+
+This module takes some ideas from [MagestioEcommerce/redsys-tpv](https://github.com/MagestioEcommerce/redsys-tpv) and [Redsys magento 2 module](https://pagosonline.redsys.es/descargas.html), but we add some changes to not create orders with pending payment status to adapt to our requeriments.
 
 ## Technologies
 - Magento 2.4.7-p3 CE
@@ -29,3 +31,4 @@ You can execute command ```php bin/magento module:uninstall OAG_Redsys``` to uni
 ## Future Features
 * Payments with Bizum
 * Accepts SOAP integration with Redsys
+* Add transaction information in order
