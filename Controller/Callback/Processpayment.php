@@ -76,7 +76,7 @@ class Processpayment implements CsrfAwareActionInterface, HttpPostActionInterfac
      * @param CartManagementInterface $quoteManagement
      * @param TotalAmount $totalAmount
      * @param RequestInterface $request
-     * @param resultRedirectFactory $resultRedirectFactory
+     * @param RedirectFactory $resultRedirectFactory
      */
     public function __construct(
         Base64Url $base64Url,
