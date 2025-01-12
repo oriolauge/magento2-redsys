@@ -1,11 +1,33 @@
 <?php
 
 namespace OAG\Redsys\Controller\Callback;
-use Magento\Framework\App\Action\Action;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
 
-class Error extends Action implements HttpGetActionInterface
+class Error implements HttpGetActionInterface
 {
+    /**
+     * @var ManagerInterface
+     */
+    protected $messageManager;
+
+    /**
+     * @var RedirectFactory
+     */
+    protected $resultRedirectFactory;
+
+    /**
+     * @param ManagerInterface $messageManager
+     * @param RedirectInterface $redirect
+     */
+    public function __construct(
+        ManagerInterface $messageManager,
+        RedirectFactory $resultRedirectFactory
+    ) {
+        $this->messageManager = $messageManager;
+        $this->resultRedirectFactory = $resultRedirectFactory;
+    }
     /**
      * Add generic message and redirect to cart
      *
@@ -14,6 +36,9 @@ class Error extends Action implements HttpGetActionInterface
     public function execute()
     {
         $this->messageManager->addErrorMessage(__('Transaction denied.'));
-        $this->_redirect('checkout/cart');
+        /** @var Redirect $resultRedirect */
+        $resultRedirect = $this->resultRedirectFactory->create();
+        $resultRedirect->setPath('checkout/cart');
+        return $resultRedirect;
     }
 }
