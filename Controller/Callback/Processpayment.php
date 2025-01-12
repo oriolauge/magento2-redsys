@@ -160,6 +160,9 @@ class Processpayment implements CsrfAwareActionInterface, HttpPostActionInterfac
 
             try {
                 $order = $this->placeQuote($quote);
+                if (!$order) {
+                    return $this->returnJsonError('No order has been created');
+                }
             } catch(\Exception $e) {
                 return $this->returnJsonError($e->getMessage());
             }
