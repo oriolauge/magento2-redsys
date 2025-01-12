@@ -7,6 +7,8 @@ If you want more information about Redsys system (redirection mode), you can cli
 
 This module takes some ideas from [MagestioEcommerce/redsys-tpv](https://github.com/MagestioEcommerce/redsys-tpv) and [Redsys magento 2 module](https://pagosonline.redsys.es/descargas.html), but we add some changes to not create orders with pending payment status to adapt to our requeriments.
 
+Also, you can check the official documentation in [Adobe page](https://developer.adobe.com/commerce/php/development/payments-integrations/)
+
 ## Technologies
 - Magento 2.4.7-p3 CE
 - Stability: Stable Build
