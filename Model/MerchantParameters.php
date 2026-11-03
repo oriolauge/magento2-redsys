@@ -90,7 +90,7 @@ class MerchantParameters
         $transaction = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_TRANSACTION_TYPE, ScopeInterface::SCOPE_STORE);
         $terminal = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_TERMINAL, ScopeInterface::SCOPE_STORE);
         $codeLanguage = $this->scopeConfig->getValue('general/locale/code', ScopeInterface::SCOPE_STORE);
-        $sendEmv3ds = $this->scopeConfig->getValue('general/locale/code', ScopeInterface::SCOPE_STORE);
+        $sendEmv3ds = $this->scopeConfig->isSetFlag(ConfigInterface::XML_PATH_SEND_EMV3DS, ScopeInterface::SCOPE_STORE);
 
         /**
          * @todo: missign optionals params:
