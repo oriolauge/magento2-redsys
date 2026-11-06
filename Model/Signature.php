@@ -3,10 +3,16 @@ namespace OAG\Redsys\Model;
 use OAG\Redsys\Model\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\Exception\LocalizedException;
 use OAG\Redsys\Model\Base64Url;
 
 class Signature
 {
+    /**
+     * Redsys secret keys are 24 bytes (3DES key) once base64 decoded
+     */
+    const SECRET_KEY_BYTES = 24;
+
     /**
      * @var ScopeConfigInterface
      */
@@ -61,11 +67,22 @@ class Signature
      * @param string $incrementId
      * @param string $merchantParameters
      * @return string|false
+     * @throws LocalizedException
      */
     protected function generateSignature(string $incrementId, string $merchantParameters)
     {
-        $keySha256 = $this->scopeConfig->getValue(ConfigInterface::XML_PATH_SECRET_KEY, ScopeInterface::SCOPE_STORE);
-        $key = base64_decode($keySha256);
+        $keySha256 = (string) $this->scopeConfig->getValue(
+            ConfigInterface::XML_PATH_SECRET_KEY,
+            ScopeInterface::SCOPE_STORE
+        );
+        /**
+         * Fail closed: openssl_encrypt() silently pads a short/empty key with
+         * zero bytes, which would make every signature computable by anyone.
+         */
+        $key = base64_decode(trim($keySha256), true);
+        if ($key === false || strlen($key) !== self::SECRET_KEY_BYTES) {
+            throw new LocalizedException(__('Redsys secret key is missing or invalid.'));
+        }
         $key = $this->encrypt3DES($incrementId, $key);
         return hash_hmac('sha256', $merchantParameters, $key, true);
     }

@@ -38,10 +38,10 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="secret_key" translate="label" type="obscure" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="secret_key" translate="label comment" type="obscure" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Secret Encrypted Key (SHA-256)</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    <comment><![CDATA[Secret key that Redsys send to the merchant]]></comment>
+                    <comment><![CDATA[Secret key that Redsys send to the merchant. Use a different key for each environment: the Sandbox key is public in Redsys documentation, so never use it (or reuse it) in a production store.]]></comment>
                     <depends>
                         <field id="active">1</field>
                     </depends>
