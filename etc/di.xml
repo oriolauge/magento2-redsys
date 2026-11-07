@@ -65,7 +65,7 @@
     </virtualType>
 
     <!-- Dedicated logger: everything the module logs goes to var/log/redsys.log -->
-    <virtualType name="RedsysLogger" type="Magento\Framework\Logger\Monolog">
+    <virtualType name="RedsysLogger" type="Monolog\Logger">
         <arguments>
             <argument name="name" xsi:type="string">redsys</argument>
             <argument name="handlers" xsi:type="array">
