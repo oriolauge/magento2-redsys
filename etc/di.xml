@@ -64,6 +64,26 @@
         </arguments>
     </virtualType>
 
+    <!-- Dedicated logger: everything the module logs goes to var/log/redsys.log -->
+    <virtualType name="RedsysLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">redsys</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="redsys" xsi:type="object">OAG\Redsys\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="OAG\Redsys\Controller\Callback\Processpayment">
+        <arguments>
+            <argument name="logger" xsi:type="object">RedsysLogger</argument>
+        </arguments>
+    </type>
+    <type name="OAG\Redsys\Model\PaymentInformationManagement">
+        <arguments>
+            <argument name="logger" xsi:type="object">RedsysLogger</argument>
+        </arguments>
+    </type>
+
     <type name="OAG\Redsys\Block\Info">
         <arguments>
             <argument name="config" xsi:type="object">OAG\Redsys\Gateway\Config\Redsys</argument>
