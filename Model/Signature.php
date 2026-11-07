@@ -9,9 +9,11 @@ use OAG\Redsys\Model\Base64Url;
 class Signature
 {
     /**
-     * Redsys secret keys are 24 bytes (3DES key) once base64 decoded
+     * Minimum size of the merchant secret key once base64 decoded: 3DES uses a 24 bytes key
+     * (the Redsys test key is 32 base64 characters = 24 bytes). Longer keys are not rejected:
+     * OpenSSL uses the first 24 bytes.
      */
-    const SECRET_KEY_BYTES = 24;
+    const SECRET_KEY_MIN_BYTES = 24;
 
     /**
      * @var ScopeConfigInterface
@@ -75,12 +77,13 @@ class Signature
             ConfigInterface::XML_PATH_SECRET_KEY,
             ScopeInterface::SCOPE_STORE
         );
+
         /**
          * Fail closed: openssl_encrypt() silently pads a short/empty key with
          * zero bytes, which would make every signature computable by anyone.
          */
         $key = base64_decode(trim($keySha256), true);
-        if ($key === false || strlen($key) !== self::SECRET_KEY_BYTES) {
+        if ($key === false || strlen($key) < self::SECRET_KEY_MIN_BYTES) {
             throw new LocalizedException(__('Redsys secret key is missing or invalid.'));
         }
         $key = $this->encrypt3DES($incrementId, $key);
