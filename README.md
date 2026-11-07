@@ -30,6 +30,15 @@ You can execute command ```php bin/magento module:uninstall OAG_Redsys``` to uni
 * Create order only when Redsys confirm the payment (no more orders with pending status)
 * No redirection pages in checkout (we use new webapi methods to avoid this step tipical in Magento 1)
 
+## Logs
+
+The module writes its own log in `var/log/redsys.log` (payment notifications that
+Redsys sends to the store, rejected callbacks, errors preparing the payment).
+Entries with level `CRITICAL` mean that Redsys notified an authentic payment but
+the order could not be created, so the customer may have been charged: check
+them against the Redsys panel. Magento does not rotate custom logs, so add this
+file to your logrotate configuration.
+
 ## Future Features
 * Payments with Bizum
 * Accepts SOAP integration with Redsys
