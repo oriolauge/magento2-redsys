@@ -16,6 +16,17 @@ class TotalAmount
      */
     public function execute(CartInterface $quote): string
     {
-        return number_format($quote->getGrandTotal(), 2, '', '');
+        return $this->format((float) $quote->getGrandTotal());
+    }
+
+    /**
+     * Convert a plain amount to Redsys format (minor units, no separators)
+     *
+     * @param float $amount
+     * @return string
+     */
+    public function format(float $amount): string
+    {
+        return number_format($amount, 2, '', '');
     }
 }
