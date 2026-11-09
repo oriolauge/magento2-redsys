@@ -10,7 +10,7 @@ This module takes some ideas from [MagestioEcommerce/redsys-tpv](https://github.
 Also, you can check the official documentation in [Adobe page](https://developer.adobe.com/commerce/php/development/payments-integrations/)
 
 ## Technologies
-- Magento 2.4.7-p3 CE
+- Magento 2.4.7-p10 CE
 - Stability: Stable Build
 
 ## Instalation guide
