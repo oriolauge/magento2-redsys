@@ -8,6 +8,7 @@ namespace OAG\Redsys\Model;
 use OAG\Redsys\Gateway\Config\Redsys;
 use OAG\Redsys\Model\Signature;
 use OAG\Redsys\Model\MerchantParameters;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Checkout\Model\Type\Onepage;
 use Magento\Customer\Model\Session;
@@ -96,7 +97,7 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
             $quote->collectTotals();
 
             if (!$quote->getGrandTotal()) {
-                throw new \Magento\Framework\Exception\LocalizedException(
+                throw new LocalizedException(
                     __('Redsys can\'t process orders with a zero balance due.')
                 );
             }
@@ -124,7 +125,7 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
         } catch (\Exception $e) {
             $this->logger->error($e);
             //frontend javascript will catch this exception
-            throw new \Exception(
+            throw new LocalizedException(
                 __('We are sorry, something was wrong with place order. Try again or select another payment method.')
             );
         }
