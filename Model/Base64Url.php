@@ -21,11 +21,16 @@ class Base64Url
     /**
      * Decode base 64 that the special characters was converted to make compatible with urls
      *
+     * base64_decode() returns false for some invalid inputs. The declared return
+     * type is string, so on PHP 8 that false becomes a TypeError and the payment
+     * notification never reaches the signature check.
+     *
      * @param string $string
-     * @return float
+     * @return string
      */
     public function decode(string $string): string
     {
-        return base64_decode(strtr($string, '-_', '+/'));
+        $decoded = base64_decode(strtr($string, '-_', '+/'));
+        return is_string($decoded) ? $decoded : '';
     }
 }
