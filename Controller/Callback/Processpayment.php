@@ -249,7 +249,13 @@ class Processpayment implements CsrfAwareActionInterface, HttpPostActionInterfac
         }
 
         // Last safety net: the order that exists now must match what was charged.
-        if ($this->totalAmount->format((float) $order->getGrandTotal()) !== $paidAmount) {
+        // The quote currency was already accepted by the currency check above,
+        // so format() cannot fail here, now that the order exists.
+        $orderAmount = $this->totalAmount->format(
+            (float) $order->getGrandTotal(),
+            (string) $quote->getQuoteCurrencyCode()
+        );
+        if ($orderAmount !== $paidAmount) {
             $this->logger->critical(
                 '[Redsys] Order grand total differs from the amount charged',
                 $context + ['order_id' => $order->getId(), 'ds_amount' => $paidAmount]
