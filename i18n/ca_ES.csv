@@ -32,3 +32,4 @@
 "Order completed: %1","Comanda realitzada: %1"
 "Transaction not autorized","Transacció no autoritzada"
 "No order has been created","La comanda no s'ha creat"
+"Redsys cannot charge in currency ""%1"".","Redsys no pot realitzar càrrecs en la moneda ""%1""."
