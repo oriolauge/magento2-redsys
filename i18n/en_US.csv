@@ -33,3 +33,4 @@
 "Transaction not autorized","Transaction not autorized"
 "No order has been created","No order has been created"
 "Redsys cannot charge in currency ""%1"".","Redsys cannot charge in currency ""%1""."
+"Redsys is not the payment method selected for this cart.","Redsys is not the payment method selected for this cart."
