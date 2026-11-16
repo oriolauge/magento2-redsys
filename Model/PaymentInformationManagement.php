@@ -8,6 +8,7 @@ namespace OAG\Redsys\Model;
 use OAG\Redsys\Gateway\Config\Redsys;
 use OAG\Redsys\Model\Signature;
 use OAG\Redsys\Model\MerchantParameters;
+use OAG\Redsys\Model\Ui\RedsysConfigProvider;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Checkout\Model\Type\Onepage;
@@ -89,6 +90,17 @@ class PaymentInformationManagement implements \OAG\Redsys\Api\RedsysPaymentInfor
         try {
             /** @var \Magento\Quote\Model\Quote $quote */
             $quote = $this->cartRepository->getActive($cartId);
+
+            /**
+             * Only sign a payment for a cart whose saved payment method is Redsys.
+             * Magento validates the method (availability, country, totals) when the
+             * checkout saves it, so this endpoint must not be a way around that.
+             */
+            if ($quote->getPayment()->getMethod() !== RedsysConfigProvider::CODE) {
+                throw new LocalizedException(
+                    __('Redsys is not the payment method selected for this cart.')
+                );
+            }
 
             if ($this->getCheckoutMethod($quote) === Onepage::METHOD_GUEST) {
                 $this->prepareGuestQuote($quote);
