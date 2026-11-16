@@ -120,17 +120,26 @@ class Emv3ds
             }
         }
 
-        $city = $address->getCity();
-        if (strlen($city) <= self::ADDRESS_MAX_LENGTH) {
+        /**
+         * Empty values are skipped. A virtual cart has a shipping address
+         * without city, postcode or country: strlen(null) is deprecated since
+         * PHP 8.1 (Magento converts it into an exception) and a null country
+         * is a TypeError in convertIsoAlpha2ToNumeric().
+         */
+        $city = (string) $address->getCity();
+        if ($city !== '' && strlen($city) <= self::ADDRESS_MAX_LENGTH) {
             $addressEm3dsData[$type . 'AddrCity'] = $city;
         }
 
-        $postcode = $address->getPostcode();
-        if (strlen($postcode) <= self::POSTCODE_MAX_LENGTH) {
+        $postcode = (string) $address->getPostcode();
+        if ($postcode !== '' && strlen($postcode) <= self::POSTCODE_MAX_LENGTH) {
             $addressEm3dsData[$type . 'AddrPostCode'] = $postcode;
         }
 
-        $countryIsoNumeric = $this->countryIsoNumeric->convertIsoAlpha2ToNumeric($address->getCountryId());
+        $countryId = (string) $address->getCountryId();
+        $countryIsoNumeric = $countryId !== ''
+            ? $this->countryIsoNumeric->convertIsoAlpha2ToNumeric($countryId)
+            : null;
         if ($countryIsoNumeric) {
             $addressEm3dsData[$type . 'AddrCountry'] = $countryIsoNumeric;
         }
