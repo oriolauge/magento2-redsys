@@ -96,6 +96,7 @@ class Signature
      * @param string $message
      * @param string $key
      * @return string
+     * @throws LocalizedException
      */
     protected function encrypt3DES(string $message, string $key): string
     {
@@ -103,12 +104,23 @@ class Signature
         $iv = implode(array_map("chr", $bytes));
         $long = ceil(strlen($message) / 16) * 16;
         $message = $message . str_repeat("\0", $long - strlen($message));
-        return substr(openssl_encrypt(
+        $encrypted = openssl_encrypt(
             $message,
             'des-ede3-cbc',
             $key,
             OPENSSL_RAW_DATA,
             $iv
-        ), 0, $long);
+        );
+        $derivedKey = is_string($encrypted) ? substr($encrypted, 0, $long) : '';
+
+        /**
+         * Fail closed: a failed encryption (false) or an empty message would
+         * leave an empty HMAC key, and a signature made with an empty key can
+         * be computed by anyone.
+         */
+        if ($derivedKey === '') {
+            throw new LocalizedException(__('Redsys signature could not be computed.'));
+        }
+        return $derivedKey;
     }
 }

@@ -34,3 +34,4 @@
 "No order has been created","El pedido no se ha creado"
 "Redsys cannot charge in currency ""%1"".","Redsys no puede cobrar en la divisa ""%1""."
 "Redsys is not the payment method selected for this cart.","Redsys no es el método de pago seleccionado para este carrito."
+"Redsys signature could not be computed.","No se ha podido calcular la firma de Redsys."
