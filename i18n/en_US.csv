@@ -34,3 +34,4 @@
 "No order has been created","No order has been created"
 "Redsys cannot charge in currency ""%1"".","Redsys cannot charge in currency ""%1""."
 "Redsys is not the payment method selected for this cart.","Redsys is not the payment method selected for this cart."
+"Redsys signature could not be computed.","Redsys signature could not be computed."

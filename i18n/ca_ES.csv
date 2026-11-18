@@ -34,3 +34,4 @@
 "No order has been created","La comanda no s'ha creat"
 "Redsys cannot charge in currency ""%1"".","Redsys no pot realitzar càrrecs en la moneda ""%1""."
 "Redsys is not the payment method selected for this cart.","Redsys no és el mètode de pagament seleccionat per a aquesta cistella."
+"Redsys signature could not be computed.","No s'ha pogut calcular la signatura de Redsys."
