@@ -12,7 +12,7 @@ interface RedsysPaymentInformationManagementInterface
      * Get redsys payment information
      *
      * @param int $cartId
-     * @return \Magento\Checkout\Api\Data\PaymentDetailsInterface
+     * @return string JSON with Ds_SignatureVersion, Ds_MerchantParameters and Ds_Signature
      */
     public function getPaymentInformation($cartId);
 }
