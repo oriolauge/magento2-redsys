@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="load_customer_quote_before">
+        <observer name="oag_redsys_keep_quote_awaiting_notification"
+                  instance="OAG\Redsys\Observer\KeepQuoteAwaitingNotification" />
+    </event>
+</config>
