@@ -18,6 +18,13 @@
         "magento/module-sales": "103.0.*",
         "magento/module-store": "101.*"
     },
+    "keywords": [
+        "magento 2",
+        "magento2",
+        "magento2-module",
+        "magento2-extension",
+        "redsys"
+    ],
     "autoload": {
         "files": [
             "registration.php"
